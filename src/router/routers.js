@@ -19,6 +19,35 @@ import parentView from '@/components/parent-view'
 
 export default [
   {
+    path: '/system',
+    name: 'system',
+    meta: {
+      icon: 'md-cloud-upload',
+      title: '系统管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'update_table_page',
+        name: 'update_table_page',
+        meta: {
+          icon: 'ios-document',
+          title: '上传Csv'
+        },
+        component: () => import('@/view/update/update-table.vue')
+      },
+      {
+        path: 'update_paste_page',
+        name: 'update_paste_page',
+        meta: {
+          icon: 'md-clipboard',
+          title: '粘贴表格数据'
+        },
+        component: () => import('@/view/update/update-paste.vue')
+      }
+    ]
+  },
+  {
     path: '/login',
     name: 'login',
     meta: {
@@ -47,34 +76,6 @@ export default [
           icon: 'md-home'
         },
         component: () => import('@/view/single-page/home')
-      }
-    ]
-  },
-  {
-    path: '',
-    name: 'doc',
-    meta: {
-      title: '文档',
-      href: 'https://lison16.github.io/iview-admin-doc/#/',
-      icon: 'ios-book'
-    }
-  },
-  {
-    path: '/join',
-    name: 'join',
-    component: Main,
-    meta: {
-      hideInBread: true
-    },
-    children: [
-      {
-        path: 'join_page',
-        name: 'join_page',
-        meta: {
-          icon: '_qq',
-          title: 'QQ群'
-        },
-        component: () => import('@/view/join-page.vue')
       }
     ]
   },
@@ -214,35 +215,6 @@ export default [
           title: '自定义图标'
         },
         component: () => import('@/view/components/icons/icons.vue')
-      }
-    ]
-  },
-  {
-    path: '/update',
-    name: 'update',
-    meta: {
-      icon: 'md-cloud-upload',
-      title: '数据上传'
-    },
-    component: Main,
-    children: [
-      {
-        path: 'update_table_page',
-        name: 'update_table_page',
-        meta: {
-          icon: 'ios-document',
-          title: '上传Csv'
-        },
-        component: () => import('@/view/update/update-table.vue')
-      },
-      {
-        path: 'update_paste_page',
-        name: 'update_paste_page',
-        meta: {
-          icon: 'md-clipboard',
-          title: '粘贴表格数据'
-        },
-        component: () => import('@/view/update/update-paste.vue')
       }
     ]
   },

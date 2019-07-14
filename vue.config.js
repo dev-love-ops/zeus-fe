@@ -30,6 +30,7 @@ module.exports = {
   // 如果你不需要使用eslint，把lintOnSave设为false即可
   lintOnSave: true,
   chainWebpack: config => {
+    // 这里配置的是引用的简写, 比如如下@符号表示src, 如果引用的话就可以使用@代替src
     config.resolve.alias
       .set('@', resolve('src')) // key,value自行定义，比如.set('@@', resolve('src/components'))
       .set('_c', resolve('src/components'))

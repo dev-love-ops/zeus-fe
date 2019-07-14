@@ -9,7 +9,10 @@ const { homeName } = config
 
 Vue.use(Router)
 const router = new Router({
+  // 采用了ES6的对象简洁写法, 只有当key和value相同的时候, {routes}相当于{routes: routes}
   routes,
+  // mode默认是哈希模式, 就是URL中会带有#, 哈希模式的好处是URL改变时页面不会刷新, 如果使用history模式的话, URL就是普通的URL, 没有#, 需要配合后端Nginx的配置, 不然刷新页面就会出现404
+  // 具体的配置方法参考 https://router.vuejs.org/zh/guide/essentials/history-mode.html
   mode: 'history'
 })
 const LOGIN_PAGE_NAME = 'login'
