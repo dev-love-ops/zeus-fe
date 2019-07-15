@@ -22,19 +22,20 @@ export default [
     path: '/system',
     name: 'system',
     meta: {
-      icon: 'md-cloud-upload',
+      icon: 'md-settings',
       title: '系统管理'
     },
+    // 组件写成main的目的是侧边栏等通用显示部分
     component: Main,
     children: [
       {
-        path: 'update_table_page',
-        name: 'update_table_page',
+        path: 'user',
+        name: 'user',
         meta: {
-          icon: 'ios-document',
-          title: '上传Csv'
+          icon: 'ios-contact',
+          title: '用户管理'
         },
-        component: () => import('@/view/update/update-table.vue')
+        component: () => import('@/view/system/user.vue')
       },
       {
         path: 'update_paste_page',
