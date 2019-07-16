@@ -1,7 +1,9 @@
 const api = {
   system: {
     user: {
-      list: ''
+      list: '/api/system/user'
     }
   }
 }
+
+export default api

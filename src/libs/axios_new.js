@@ -1,5 +1,4 @@
 import Axios from 'axios'
-import Cookies from 'js-cookie'
 /**
  * @param {String} type 请求类型 GET或POST
  * @param {String} url 请求地址
@@ -13,7 +12,7 @@ function axios(type, url, data, successCallback, failCallback){
   type = type.toLowerCase()
   // 定义请求header
   let headers = {
-      accessToken: 'test'
+    Authorization: 'test'
   }
   // GET请求的时候参数格式稍有不同
   if (type === 'get')  {
@@ -21,8 +20,12 @@ function axios(type, url, data, successCallback, failCallback){
   }
 
   Axios[type](url, data, headers).then(res => {
+    if (res.data.code === 0){
+      successCallback(res.data.data)
+    } else {
+      this.$Message.error(res.data.message);
+    }
 
-    successCallback(res)
 
   }).catch(error => {
     if (error.response) {

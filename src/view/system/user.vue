@@ -10,6 +10,10 @@
         <FormItem prop="userId" label="用户ID">
           <Input v-model="searchForm.userId" />
         </FormItem>
+        <FormItem >
+          <Button type="primary" @click="getUserList" style="margin-right: 10px">查询</Button>
+          <Button type="warning" @click="handleReset('searchForm')">重置</Button>
+        </FormItem>
       </Form>
 
 
@@ -172,11 +176,13 @@
       getUserList () {
         axios('GET',
           api.system.user.list,
-          { page: this.page.current, page_size: this.page.pageSize, search: this.searchVal, format: 'json' },
+          {},
           (data) => {
-            this.page.total = data.count
-            this.tableData = data.results
+            this.tableData = data
           })
+      },
+      handleReset(name){
+        this.$refs[name].resetFields()
       },
       // 翻页
       changePage (current) {
@@ -193,20 +199,9 @@
         this.editModalFlag = true
       },
       saveEditData () {
-        axios('PUT',
-          api.cmdb.server + this.editFormData.id + '/',
-          this.editFormData,
-          (data) => {
-            this.getServer()
-          })
+
       },
       delete (id) {
-        axios('DELETE',
-          api.cmdb.server + id + '/',
-          {},
-          (data) => {
-            this.getServer()
-          })
       }
 
     },
@@ -221,7 +216,7 @@
       }
     },
     mounted () {
-      // this.getUserList()
+      this.getUserList()
     }
   }
 </script>
