@@ -25,9 +25,7 @@ const turnTo = (to, access, next) => {
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
   const token = getToken()
-  next({
-    name: homeName // 跳转到homeName页
-  })
+  next()
 
 })
 
