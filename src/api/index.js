@@ -1,7 +1,7 @@
 const api = {
   system: {
     user: {
-      list: '/api/system/user'
+      user: '/api/system/user'
     }
   }
 }
