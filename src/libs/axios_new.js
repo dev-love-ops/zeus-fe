@@ -1,5 +1,7 @@
 import Axios from 'axios'
+import router from '@/router'
 import { Message } from 'iview'
+import { setToken, getToken } from '@/libs/util'
 /**
  * @param {String} type 请求类型 GET或POST
  * @param {String} url 请求地址
@@ -13,7 +15,7 @@ function axios(type, url, data, successCallback, failCallback){
   type = type.toLowerCase()
   // 定义请求header
   let headers = {
-    Authorization: 'test'
+    Authorization: 'Bearer ' + getToken()
   }
   // GET请求的时候参数格式稍有不同
   if (type === 'get')  {
@@ -44,6 +46,9 @@ function axios(type, url, data, successCallback, failCallback){
       // 401 unauthorized
       if (error.response.status == 401) {
         // 跳转到登录页面
+        router.push({
+          name: 'login'
+        })
         return
       }
     } else {

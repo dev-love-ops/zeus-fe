@@ -37,6 +37,9 @@
         <FormItem label="用户名" prop="username">
           <Input v-model="addFormData.username"></Input>
         </FormItem>
+        <FormItem label="密码" prop="password">
+          <Input v-model="addFormData.password"></Input>
+        </FormItem>
         <FormItem label="电话" prop="mobile">
           <Input v-model="addFormData.mobile"></Input>
         </FormItem>
@@ -45,7 +48,7 @@
         </FormItem>
       </Form>
     </Modal>
-    <Modal v-model="editModalFlag" title="新增用户" @on-ok="saveEditData" style="text-align: center">
+    <Modal v-model="editModalFlag" title="编辑用户" @on-ok="saveEditData" style="text-align: center">
       <Form ref="editModalRef" :model="editFormData" :label-width="80">
         <FormItem label="用户ID" prop="userId">
           <Input v-model="editFormData.userId" disabled></Input>

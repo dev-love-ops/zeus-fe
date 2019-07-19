@@ -18,6 +18,7 @@
 <script>
 import './user.less'
 import { mapActions } from 'vuex'
+import { removeToken } from '@/libs/util'
 export default {
   name: 'User',
   props: {
@@ -35,10 +36,9 @@ export default {
       'handleLogOut'
     ]),
     logout () {
-      this.handleLogOut().then(() => {
-        this.$router.push({
-          name: 'login'
-        })
+      removeToken()
+      this.$router.push({
+        name: 'login'
       })
     },
     message () {

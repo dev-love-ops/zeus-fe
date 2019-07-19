@@ -5,10 +5,9 @@
 <template>
   <div class="login">
     <div class="login-con">
-      <Card icon="log-in" title="欢迎登录" :bordered="false">
+      <Card icon="log-in" title="欢迎登录" :bordered="false" style="text-align: center">
         <div class="form-con">
           <login-form @on-success-valid="handleSubmit"></login-form>
-          <p class="login-tip">输入任意用户名和密码即可</p>
         </div>
       </Card>
     </div>
@@ -17,25 +16,28 @@
 
 <script>
 import LoginForm from '_c/login-form'
-import { mapActions } from 'vuex'
+import axios from '@/libs/axios_new'
+import api from '@/api/index'
+import { setToken, getToken } from '@/libs/util'
+
 export default {
   components: {
     LoginForm
   },
   methods: {
-    ...mapActions([
-      'handleLogin',
-      'getUserInfo'
-    ]),
+
     handleSubmit ({ userName, password }) {
-      this.handleLogin({ userName, password }).then(res => {
-        this.getUserInfo().then(res => {
+      axios('POST',
+        api.login,
+        {username: userName, password: password},
+        (data) => {
+          setToken(data)
           this.$router.push({
             name: this.$config.homeName
           })
         })
-      })
     }
+
   }
 }
 </script>

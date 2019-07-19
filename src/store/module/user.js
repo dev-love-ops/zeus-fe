@@ -10,6 +10,8 @@ import {
   getUnreadCount
 } from '@/api/user'
 import { setToken, getToken } from '@/libs/util'
+import axios from '@/libs/axios_new'
+import api from '@/api/index'
 
 export default {
   state: {
@@ -76,18 +78,12 @@ export default {
     // 登录
     handleLogin ({ commit }, { userName, password }) {
       userName = userName.trim()
-      return new Promise((resolve, reject) => {
-        login({
-          userName,
-          password
-        }).then(res => {
-          const data = res.data
-          commit('setToken', data.token)
-          resolve()
-        }).catch(err => {
-          reject(err)
+      axios('POST',
+        api.login,
+        {username: userName, password: password},
+        (data) => {
+          commit('setToken', data)
         })
-      })
     },
     // 退出登录
     handleLogOut ({ state, commit }) {
