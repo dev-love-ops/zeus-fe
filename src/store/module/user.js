@@ -15,7 +15,7 @@ export default {
   state: {
     userName: '',
     userId: '',
-    avatorImgPath: '',
+    avatorImgPath: '/assets/',
     token: getToken(),
     access: '',
     hasGetInfo: false,
