@@ -106,6 +106,8 @@ export default {
       'handleLogin',
       'getUnreadMessageCount'
     ]),
+    // 点击左侧菜单的时候会触发这个函数
+    // route: 被点击的菜单的路由的name属性, String类型
     turnToPage (route) {
       let { name, params, query } = {}
       if (typeof route === 'string') name = route

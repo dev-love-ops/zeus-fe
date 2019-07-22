@@ -3,6 +3,7 @@ import parentView from '@/components/parent-view'
 
 /**
  * iview-admin中meta除了原生参数外可配置的参数:
+ * name: 需要是唯一的, 点击左侧的导航的时候是通过route.push({name})来跳转的
  * meta: {
  *  title: { String|Number|Function }
  *         显示在侧边栏、面包屑和标签栏的文字
