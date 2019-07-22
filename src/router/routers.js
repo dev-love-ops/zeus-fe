@@ -33,18 +33,18 @@ export default [
         name: 'user',
         meta: {
           icon: 'ios-contact',
-          title: '用户管理'
+          title: '用户'
         },
         component: () => import('@/view/system/user.vue')
       },
       {
-        path: 'update_paste_page',
-        name: 'update_paste_page',
+        path: 'role',
+        name: 'role',
         meta: {
           icon: 'md-clipboard',
-          title: '粘贴表格数据'
+          title: '角色'
         },
-        component: () => import('@/view/update/update-paste.vue')
+        component: () => import('@/view/system/role.vue')
       }
     ]
   },

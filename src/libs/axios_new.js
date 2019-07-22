@@ -17,16 +17,14 @@ function axios(type, url, data, successCallback, failCallback){
   let headers = {
     Authorization: 'Bearer ' + getToken()
   }
-  // GET请求的时候参数格式稍有不同
-  if (type === 'get')  {
+  // GET/DELETE请求的时候第二个参数会多包装一层
+  // POST请求方式比较常规, 第二个参数就作为参数
+  //PUT的请求方式的话会从第二个参数中取数据, 从第三个参数中去相关的配置信息, 比如header等
+  if (type === 'get' || type === 'delete')  {
     data = {params: data, headers: headers}
   }
-  //DELETE请求的时候body参数的格式多包装了一层{data: {key: value}}
-  if (type === 'delete') {
-    data = {data: data}
-  }
 
-  Axios[type](url, data, headers).then(res => {
+  Axios[type](url, data, {headers}).then(res => {
 
     if (res.data.code === 0){
       successCallback(res.data.data)
