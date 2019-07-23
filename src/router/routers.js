@@ -50,6 +50,25 @@ export default [
     ]
   },
   {
+    path: '/changelog',
+    name: 'changelog',
+    meta: {
+      hideInBread: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'changelog_page',
+        name: 'changelog_page',
+        meta: {
+          icon: 'ios-navigate',
+          title: '更新'
+        },
+        component: () => import('@/view/single-page/changelog/index.vue')
+      }
+    ]
+  },
+  {
     path: '/login',
     name: 'login',
     meta: {

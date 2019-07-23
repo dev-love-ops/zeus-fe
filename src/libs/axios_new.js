@@ -20,8 +20,11 @@ function axios(type, url, data, successCallback, failCallback){
   // GET/DELETE请求的时候第二个参数会多包装一层
   // POST请求方式比较常规, 第二个参数就作为参数
   //PUT的请求方式的话会从第二个参数中取数据, 从第三个参数中去相关的配置信息, 比如header等
-  if (type === 'get' || type === 'delete')  {
+  if (type === 'get')  {
     data = {params: data, headers: headers}
+  }
+  if (type === 'delete')  {
+    data = {data: data, headers: headers}
   }
 
   Axios[type](url, data, {headers}).then(res => {
