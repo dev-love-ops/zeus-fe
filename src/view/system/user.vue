@@ -2,13 +2,17 @@
   <div>
 
     <Card>
-
       <Form class="search-form" ref="searchForm" :model="searchForm" inline :label-width="80">
         <FormItem prop="username" label="姓名">
           <Input v-model="searchForm.username" />
         </FormItem>
         <FormItem prop="userId" label="用户ID">
           <Input v-model="searchForm.userId" />
+        </FormItem>
+        <FormItem prop="role" label="角色">
+          <Select v-model="searchForm.roleId" filterable clearable>
+            <Option v-for="item in roleList" :value="item.roleId" :key="item.roleId">{{ item.roleName }}</Option>
+          </Select>
         </FormItem>
         <FormItem >
           <Button type="primary" @click="getUserList" style="margin-right: 10px">查询</Button>
@@ -26,11 +30,10 @@
           </Page>
         </div>
       </div>
-
     </Card>
 
-    <Modal v-model="addModalFlag" title="新增用户" @on-ok="saveAddData" style="text-align: center">
-      <Form ref="addModalRef" :model="addFormData" :label-width="80">
+    <Modal v-model="addModalFlag" title="新增用户" @on-ok="saveAddData" style="text-align: center" :mask-closable="false">
+      <Form ref="addModalRef" :model="addFormData" :rules="validateRules" :label-width="80">
         <FormItem label="用户ID" prop="userId">
           <Input v-model="addFormData.userId"></Input>
         </FormItem>
@@ -46,9 +49,14 @@
         <FormItem label="邮箱" prop="email">
           <Input v-model="addFormData.email"></Input>
         </FormItem>
+        <FormItem label="角色" prop="roles">
+          <Select v-model="addFormData.roles" filterable multiple clearable>
+            <Option v-for="(value, key) in roleIdNameMap" :value="key" :key="key">{{ value }}</Option>
+          </Select>
+        </FormItem>
       </Form>
     </Modal>
-    <Modal v-model="editModalFlag" title="编辑用户" @on-ok="saveEditData" style="text-align: center">
+    <Modal v-model="editModalFlag" title="编辑用户" @on-ok="saveEditData" style="text-align: center" :mask-closable="false">
       <Form ref="editModalRef" :model="editFormData" :label-width="80">
         <FormItem label="用户ID" prop="userId">
           <Input v-model="editFormData.userId" disabled></Input>
@@ -61,6 +69,11 @@
         </FormItem>
         <FormItem label="邮箱" prop="email">
           <Input v-model="editFormData.email"></Input>
+        </FormItem>
+        <FormItem label="角色" prop="roles">
+          <Select v-model="editFormData.roles" filterable multiple clearable>
+            <Option v-for="(value, key) in roleIdNameMap" :value="key" :key="key">{{ value }}</Option>
+          </Select>
         </FormItem>
       </Form>
     </Modal>
@@ -81,7 +94,7 @@
         searchForm: {
           username: '',
           userId: '',
-          mobile: ''
+          roleId: ''
         },
         //表单数据
         page: {
@@ -113,7 +126,23 @@
             key: 'mobile',
             align: 'center'
           },
+          {
+            title: '角色',
+            key: 'mobile',
+            align: 'center',
+            render: (h, params) => {
+              let roleBtnList = []
+              let roleIds = params.row.roles
 
+              for (let i = 0; i < roleIds.length; i++) {
+                let tmp = h('Button', {props: {type: 'success', size: 'small'}, style: {marginRight: '1px'}}, this.roleIdNameMap[roleIds[i]])
+                roleBtnList.push(tmp)
+              }
+              return h('div', [
+                roleBtnList
+              ])
+            }
+          },
           {
             title: '操作',
             key: 'handle',
@@ -177,7 +206,28 @@
         addModalFlag: false,
         editModalFlag: false,
         addFormData: {},
-        editFormData: {}
+        editFormData: {
+          roles: []
+        },
+        roleIdNameMap: {},
+        roleList: [],
+        validateRules: {
+          userId: [
+            { type: 'string', pattern: /^[a-z]+$/, required: true, message: '用户ID不能为空, 并且只能使用小写字母', trigger: 'blur' }
+          ],
+          username: [
+            {type: 'string', required: true, message: '用户名称不能为空', trigger: 'blur' },
+          ],
+          password: [
+            {type: 'string', required: true, message: '密码不能为空', trigger: 'blur' }
+          ],
+          email: [
+            { type: 'email', required: true, message: '邮箱格式不正确', trigger: 'blur' }
+          ],
+          mobile: [
+            {type: 'string', required: true, message: '手机号码不能为空', trigger: 'blur' }
+          ]
+        }
       }
     },
     methods: {
@@ -190,6 +240,19 @@
             this.tableData = data.list
             this.page.total = data.total
           })
+      },
+      // 获取角色列表, 用于编辑用户角色的选项
+      getRoleList () {
+        axios('GET',
+          api.system.role.role,
+          {pageSize: 1000, pageNo: 1},
+          (data) => {
+            this.roleList = data.list
+            for (let i = 0; i < data.list.length; i++) {
+              this.roleIdNameMap[data.list[i].roleId] = data.list[i].roleName
+            }
+          })
+
       },
       // 重置搜索框
       handleReset(name){
@@ -210,12 +273,23 @@
         this.addModalFlag = true
       },
       saveAddData () {
-        axios('POST',
-          api.system.user.user,
-          this.addFormData,
-          (data) => {
-            this.getUserList()
-          })
+
+        this.$refs.addModalRef.validate((valid) => {
+          if (valid) {
+            axios('POST',
+              api.system.user.user,
+              this.addFormData,
+              (data) => {
+                this.$Message.success('用户添加成功')
+                this.getUserList()
+              })
+          } else {
+            this.$Message.error('表单校验失败')
+          }
+        })
+
+
+
       },
       //编辑用户
       showEditModal (row) {
@@ -227,15 +301,16 @@
           api.system.user.user,
           this.editFormData,
           (data) => {
+            this.$Message.success('用户修改成功')
             this.getUserList()
           })
       },
       delete (userId) {
-
         axios('DELETE',
           api.system.user.user,
           {userId: userId},
           (data) => {
+            this.$Message.success('用户删除成功')
             this.getUserList()
           })
       }
@@ -253,6 +328,7 @@
     },
     mounted () {
       this.getUserList()
+      this.getRoleList()
     }
   }
 </script>

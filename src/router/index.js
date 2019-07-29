@@ -15,7 +15,29 @@ const router = new Router({
   // 具体的配置方法参考 https://router.vuejs.org/zh/guide/essentials/history-mode.html
   mode: 'history'
 })
-const LOGIN_PAGE_NAME = 'login'
+
+
+let tmp = {
+  path: '/test',
+    name: 'testRouter',
+  meta: {
+
+},
+  // component: Main,
+    children: [
+  {
+    path: 'changelog_page',
+    name: 'changelog_page',
+    meta: {
+      icon: 'ios-navigate',
+      title: '更新个屁'
+    },
+    component: () => import('@/view/single-page/changelog/index.vue')
+  }
+]
+}
+
+router.addRoutes([tmp])
 
 const turnTo = (to, access, next) => {
   if (canTurnTo(to.name, access, routes)) next() // 有权限，可访问

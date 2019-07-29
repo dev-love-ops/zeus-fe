@@ -73,7 +73,6 @@ export default {
       return this.$store.state.app.tagRouter
     },
     userAvator () {
-      console.log(this.$store.state)
       return this.$store.state.user.avatorImgPath
     },
     cacheList () {
