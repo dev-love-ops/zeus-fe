@@ -25,18 +25,22 @@
 
     </Card>
 
-    <Modal v-model="addModalFlag" title="新增角色" @on-ok="saveAddData" style="text-align: center">
-      <Form ref="addModalRef" :model="addFormData" :label-width="80">
+    <Modal v-model="addModalFlag" title="新增角色" @on-ok="saveAddModalData" style="text-align: center">
+      <Form ref="addModalRef" :model="addModalData" :rules="validateRules" :label-width="80">
         <FormItem label="角色ID" prop="roleId">
-          <Input v-model="addFormData.roleId"></Input>
+          <Input v-model="addModalData.roleId"></Input>
         </FormItem>
         <FormItem label="角色名称" prop="roleName">
-          <Input v-model="addFormData.roleName"></Input>
+          <Input v-model="addModalData.roleName"></Input>
         </FormItem>
         <FormItem label="角色描述" prop="description">
-          <Input v-model="addFormData.description"></Input>
+          <Input v-model="addModalData.description"></Input>
         </FormItem>
       </Form>
+      <div slot="footer">
+        <Button @click="cancelAddModal">取消</Button>
+        <Button @click="saveAddModalData" type="info">提交</Button>
+      </div>
     </Modal>
     <Modal v-model="editModalFlag" title="编辑角色" @on-ok="saveEditData" style="text-align: center">
       <Form ref="editModalRef" :model="editFormData" :label-width="80">
@@ -159,12 +163,20 @@
         // 增删改查
         addModalFlag: false,
         editModalFlag: false,
-        addFormData: {},
+        addModalData: {},
+        validateRules: {
+          roleId: [
+            { type: 'string', pattern: /^[A-Z]+$/, required: true, message: '用户ID不能为空, 并且只能使用大写字母', trigger: 'blur' }
+          ],
+          roleName: [
+            {type: 'string', required: true, message: '角色名称不能为空', trigger: 'blur' },
+          ]
+        },
         editFormData: {}
       }
     },
     methods: {
-      // 获取用户列表
+      // 获取角色列表
       getRoleList () {
         axios('GET',
           api.system.role.role,
@@ -184,22 +196,33 @@
         this.page.pageSize = value
         this.getRoleList()
       },
-      //新增用户
+      //新增角色弹窗
       showAddModal () {
         this.addModalFlag = true
       },
-      saveAddData () {
-        axios('POST',
-          api.system.role.role,
-          this.addFormData,
-          (data) => {
-            this.getRoleList()
-          })
+      saveAddModalData () {
+        //iview的modal中的form不能实现检验不通过不能点击确定, 所以需要自己实现modal的footer来完成校验
+        this.$refs.addModalRef.validate((valid) => {
+          if (valid) {
+            axios('POST',
+              api.system.role.role,
+              this.addModalData,
+              (data) => {
+                this.getRoleList()
+              })
+          } else {
+            this.$Message.error('表单校验失败')
+          }
+        })
+
       },
       //编辑用户
       showEditModal (row) {
         this.editFormData = row
         this.editModalFlag = true
+      },
+      cancelAddModal(){
+        this.addModalFlag = false
       },
       saveEditData () {
         axios('PUT',
