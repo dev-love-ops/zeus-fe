@@ -34,7 +34,7 @@ export default [
         name: 'user',
         meta: {
           icon: 'ios-contact',
-          title: '用户'
+          title: '用户管理'
         },
         component: () => import('@/view/system/user.vue')
       },
@@ -43,9 +43,18 @@ export default [
         name: 'role',
         meta: {
           icon: 'md-clipboard',
-          title: '角色'
+          title: '角色管理'
         },
         component: () => import('@/view/system/role.vue')
+      },
+      {
+        path: 'permission',
+        name: 'permission',
+        meta: {
+          icon: 'md-clipboard',
+          title: '权限管理'
+        },
+        component: () => import('@/view/system/permission.vue')
       }
     ]
   },

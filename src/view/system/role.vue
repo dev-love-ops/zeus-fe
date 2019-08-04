@@ -8,18 +8,16 @@
           <Input v-model="searchForm.roleName" />
         </FormItem>
         <FormItem >
-          <Button type="primary" @click="getRoleList" style="margin-right: 10px">搜索</Button>
+          <Button type="primary" @click="getRoleList" style="margin-right: 10px">查询</Button>
           <Button type="success" @click="showAddModal">添加角色</Button>
         </FormItem>
       </Form>
-
 
         <Table size="small" ref="selection" border :columns="columns":data="tableData" ></Table>
 
       <div style="margin: 10px; overflow: hidden">
         <div style="float: left;">
-          <Page :total="page.total" :current="page.current" :page-size="page.pageSize" :page-size-opts="page.sizeOpts" show-sizer show-total @on-change="changePage" @on-page-size-change="handlePageSize">
-          </Page>
+          <Page :total="page.total" :current="page.current" :page-size="page.pageSize" :page-size-opts="page.sizeOpts" show-sizer show-total @on-change="changePage" @on-page-size-change="handlePageSize"></Page>
         </div>
       </div>
 
@@ -68,7 +66,6 @@
         // 搜索框
         searchForm: {
           roleName: '',
-
         },
         //表单数据
         page: {
