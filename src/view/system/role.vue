@@ -43,12 +43,20 @@
     <Modal v-model="editModalFlag" title="编辑角色" @on-ok="saveEditData" style="text-align: center">
       <Form ref="editModalRef" :model="editFormData" :label-width="80">
         <FormItem label="权限名称" prop="name">
-          <Input v-model="editFormData.name" disabled></Input>
+          <Input v-model="editFormData.roleId" disabled></Input>
+        </FormItem>
+        <FormItem label="权限名称" prop="name">
+          <Input v-model="editFormData.roleName"></Input>
         </FormItem>
         <FormItem label="权限描述" prop="description">
           <Input v-model="editFormData.description"></Input>
         </FormItem>
       </Form>
+    </Modal>
+
+    <!-- 菜单权限 -->
+    <Modal :title="editPermData.title" v-model="editPermData.modalFlag" :mask-closable="false" @on-ok="saveEditPermData">
+      <Tree  ref="permTree" :data="editPermData.permData" :render="renderContent" show-checkbox multiple :check-strictly="true"></Tree>
     </Modal>
 
   </div>
@@ -125,6 +133,25 @@
                 '编辑'
               )
 
+              let editPermBtn = h(
+                'Button',
+                {
+                  props: {
+                    type: 'warning',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.showEditPermModal(params.row)
+                    }
+                  }
+                },
+                '权限'
+              )
+
               let deleteBtn = h(
                 'Button',
                 {
@@ -151,7 +178,7 @@
               )
 
               return h('div', [
-                editBtn, deleteBtn
+                editBtn, editPermBtn, deleteBtn
               ])
             }
           }
@@ -169,7 +196,15 @@
             {type: 'string', required: true, message: '角色名称不能为空', trigger: 'blur' },
           ]
         },
-        editFormData: {}
+        editFormData: {},
+        //编辑角色权限相关信息
+        editPermData: {
+          permData: [],
+          title: '',
+          modalFlag: false,
+          currentRoleId: 0,
+
+        }
       }
     },
     methods: {
@@ -181,6 +216,16 @@
           (data) => {
             this.tableData = data.list
             this.page.total = data.total
+          })
+      },
+      //获取权限列表
+      getAllPermission() {
+        axios('GET',
+          api.system.permission.all,
+          {},
+          (data) => {
+
+            this.editPermData.permData = data
           })
       },
       // 翻页相关方法
@@ -213,19 +258,20 @@
         })
 
       },
-      //编辑用户
+      cancelAddModal(){
+        this.addModalFlag = false
+      },
+      //编辑角色
       showEditModal (row) {
         this.editFormData = row
         this.editModalFlag = true
-      },
-      cancelAddModal(){
-        this.addModalFlag = false
       },
       saveEditData () {
         axios('PUT',
           api.system.role.role,
           this.editFormData,
           (data) => {
+            this.$Message.success('修改成功')
             this.getRoleList()
           })
       },
@@ -237,7 +283,94 @@
           (data) => {
             this.getRoleList()
           })
-      }
+      },
+      showEditPermModal(row) {
+        this.editPermData.currentRoleId = row.id;
+        this.editPermData.title = "分配 " + row.roleName + " 的菜单权限";
+        // 匹配勾选
+        let rolePerms = row.permissions;
+        // 递归判断子节点
+        this.checkPermTree(this.editPermData.permData, rolePerms);
+        this.editPermData.modalFlag = true;
+      },
+      // 递归判断子节点
+      checkPermTree(permData, rolePerms) {
+        let that = this;
+        permData.forEach(function(p) {
+          p.checked = that.hasPerm(p, rolePerms);
+
+          if (p.children && p.children.length > 0) {
+            that.checkPermTree(p.children, rolePerms);
+          }
+        });
+      },
+      // 判断角色拥有的权限节点勾选
+      hasPerm(p, rolePerms) {
+        let flag = false;
+        for (let i = 0; i < rolePerms.length; i++) {
+          if (p.id === rolePerms[i]) {
+            flag = true;
+            break;
+          }
+        }
+        return flag;
+
+      },
+      saveEditPermData () {
+        let checkedNodes =  this.$refs.permTree.getCheckedNodes()
+        let ids = []
+        for (let i = 0; i < checkedNodes.length; i++) {
+          ids.push(checkedNodes[i].id)
+        }
+        axios('PUT',
+          api.system.role.permission,
+          {id: this.editPermData.currentRoleId, permissions: ids},
+          (data) => {
+            this.$Message.success('修改成功')
+            this.getRoleList()
+          })
+      },
+      renderContent(h, { root, node, data }) {
+        let icon = "";
+        if (data.level === 0) {
+          icon = "ios-navigate";
+        } else if (data.level === 1) {
+          icon = "md-list-box";
+        } else if (data.level === 2) {
+          icon = "md-radio-button-on";
+        } else {
+          icon = "md-radio-button-off";
+        }
+        return h(
+          "span",
+          {
+            style: {
+              display: "inline-block",
+              cursor: "pointer"
+            },
+            on: {
+              click: () => {
+                data.checked = !data.checked;
+              }
+            }
+          },
+          [
+            h("span", [
+              h("Icon", {
+                props: {
+                  type: icon,
+                  size: "16"
+                },
+                style: {
+                  "margin-right": "8px",
+                  "margin-bottom": "3px"
+                }
+              }),
+              h("span", { class: "ivu-tree-title" }, data.title)
+            ])
+          ]
+        );
+      },
 
     },
     watch: {
@@ -252,6 +385,7 @@
     },
     mounted () {
       this.getRoleList()
+      this.getAllPermission()
     }
   }
 </script>
@@ -263,4 +397,6 @@
   /deep/ .ivu-modal-footer{
     text-align: center;
   }
+
+
 </style>

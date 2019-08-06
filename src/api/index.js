@@ -5,6 +5,7 @@ const api = {
     },
     role: {
       role: '/api/system/role',
+      permission: '/api/system/role/permission',
     },
     permission: {
       all: '/api/system/permission/all',

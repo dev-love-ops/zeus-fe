@@ -39,24 +39,25 @@ function axios(type, url, data, successCallback, failCallback){
     }
 
   }).catch(error => {
-    if (error.response) {
       // 请求已发出，但服务器响应的状态码不在 2xx 范围内
       // console.log(error.response.data);
       // console.log(error.response.headers);
-      console.log(error.response.status);
-      // 401 unauthorized
-      if (error.response.status == 401) {
+
+      if (error.response.status === 401) {
         // 跳转到登录页面
         router.push({
           name: 'login'
         })
-        return
+
+      } else if (error.response.status === 403){
+
+        Message.error({
+          content: '用户无权限',
+          duration: 3
+        })
+
       }
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.log('Error', error.message);
-    }
-    // console.log(error.config);
+
   })
 }
 
