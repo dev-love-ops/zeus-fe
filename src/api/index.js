@@ -2,6 +2,7 @@ const api = {
   system: {
     user: {
       user: '/api/system/user',
+      menuList: '/api/system/user/menuList'
     },
     role: {
       role: '/api/system/role',

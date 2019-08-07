@@ -42,6 +42,7 @@ function axios(type, url, data, successCallback, failCallback){
       // 请求已发出，但服务器响应的状态码不在 2xx 范围内
       // console.log(error.response.data);
       // console.log(error.response.headers);
+      console.log(error.response);
 
       if (error.response.status === 401) {
         // 跳转到登录页面

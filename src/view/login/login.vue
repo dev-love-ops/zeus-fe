@@ -35,6 +35,16 @@ export default {
           setStorage('token' ,data.token)
           //将该用户的基本信息/角色/权限放入到localstorage中
           setStorage('userInfo', data.userInfo)
+          this.getUserMenuList()
+        })
+    },
+    getUserMenuList(){
+      axios('GET',
+        api.system.user.menuList,
+        {},
+        (data) => {
+          //将该用户拥有的菜单列表放入localstorage中
+          setStorage('menuList' ,data)
           this.$router.push({
             name: this.$config.homeName
           })

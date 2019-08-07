@@ -17,6 +17,49 @@ import parentView from '@/components/parent-view'
  *  beforeCloseName: (-) 设置该字段，则在关闭当前tab页时会去'@/router/before-close.js'里寻找该字段名对应的方法，作为关闭前的钩子函数
  * }
  */
+//用户登录页面
+const loginRouter =  {
+  path: '/login',
+  name: 'login',
+  meta: {
+    title: 'Login - 登录',
+    hideInMenu: true
+  },
+  component: () => import('@/view/login/login.vue')
+}
+//不在菜单栏显示, 只在导航页显示, 并且作为Main组件的子页面展示
+const noSideRoutersWithMain = {
+    path: '/',
+    name: 'noSideRoutersWithMain',
+    redirect: '/home',
+    component: Main,
+    meta: {
+      hideInMenu: true,
+      notCache: true
+    },
+    children: [
+      {
+        path: '/home',
+        name: 'home',
+        meta: {
+          hideInMenu: true,
+          title: '首页',
+          notCache: true,
+          icon: 'md-home'
+        },
+        component: () => import('@/view/single-page/home')
+      },
+      {
+        path: 'message_page',
+        name: 'message_page',
+        meta: {
+          icon: 'md-notifications',
+          title: '消息中心'
+        },
+        component: () => import('@/view/single-page/message/index.vue')
+      }
+    ]
+  }
 
 export default [
   {
@@ -58,76 +101,8 @@ export default [
       }
     ]
   },
-  {
-    path: '/changelog',
-    name: 'changelog',
-    meta: {
-      hideInBread: true
-    },
-    component: Main,
-    children: [
-      {
-        path: 'changelog_page',
-        name: 'changelog_page',
-        meta: {
-          icon: 'ios-navigate',
-          title: '更新'
-        },
-        component: () => import('@/view/single-page/changelog/index.vue')
-      }
-    ]
-  },
-  {
-    path: '/login',
-    name: 'login',
-    meta: {
-      title: 'Login - 登录',
-      hideInMenu: true
-    },
-    component: () => import('@/view/login/login.vue')
-  },
-  {
-    path: '/',
-    name: '_home',
-    redirect: '/home',
-    component: Main,
-    meta: {
-      hideInMenu: true,
-      notCache: true
-    },
-    children: [
-      {
-        path: '/home',
-        name: 'home',
-        meta: {
-          hideInMenu: true,
-          title: '首页',
-          notCache: true,
-          icon: 'md-home'
-        },
-        component: () => import('@/view/single-page/home')
-      }
-    ]
-  },
-  {
-    path: '/message',
-    name: 'message',
-    component: Main,
-    meta: {
-      hideInBread: true,
-      hideInMenu: true
-    },
-    children: [
-      {
-        path: 'message_page',
-        name: 'message_page',
-        meta: {
-          icon: 'md-notifications',
-          title: '消息中心'
-        },
-        component: () => import('@/view/single-page/message/index.vue')
-      }
-    ]
-  },
+
+  loginRouter,
+  noSideRoutersWithMain,
 
 ]

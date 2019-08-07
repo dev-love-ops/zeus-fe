@@ -386,3 +386,7 @@ export const setTitle = (routeItem, vm) => {
   const resTitle = pageTitle ? `${title} - ${pageTitle}` : title
   window.document.title = resTitle
 }
+
+export const initRouter = (vm) => {
+  console.log(vm)
+}
