@@ -18,7 +18,7 @@
 import LoginForm from '_c/login-form'
 import axios from '@/libs/axios_new'
 import api from '@/api/index'
-import { setToken, getToken } from '@/libs/util'
+import { setStorage, getStorage } from '@/libs/storage'
 
 export default {
   components: {
@@ -31,7 +31,10 @@ export default {
         api.login,
         {username: userName, password: password},
         (data) => {
-          setToken(data)
+          //将token放入localstorage中
+          setStorage('token' ,data.token)
+          //将该用户的基本信息/角色/权限放入到localstorage中
+
           this.$router.push({
             name: this.$config.homeName
           })

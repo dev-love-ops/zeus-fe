@@ -18,7 +18,7 @@ export default {
     userName: '',
     userId: '',
     avatorImgPath: '/assets/',
-    token: getToken(),
+    token: '',
     access: '',
     hasGetInfo: false,
     unreadCount: 0,

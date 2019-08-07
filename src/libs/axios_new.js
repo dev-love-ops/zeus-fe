@@ -1,7 +1,7 @@
 import Axios from 'axios'
 import router from '@/router'
 import { Message } from 'iview'
-import { setToken, getToken } from '@/libs/util'
+import { getStorage } from '@/libs/storage'
 /**
  * @param {String} type 请求类型 GET或POST
  * @param {String} url 请求地址
@@ -15,7 +15,7 @@ function axios(type, url, data, successCallback, failCallback){
   type = type.toLowerCase()
   // 定义请求header
   let headers = {
-    Authorization: 'Bearer ' + getToken()
+    Authorization: 'Bearer ' + getStorage('token')
   }
   // GET/DELETE请求的时候第二个参数会多包装一层
   // POST请求方式比较常规, 第二个参数就作为参数
