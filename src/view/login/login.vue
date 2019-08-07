@@ -34,7 +34,7 @@ export default {
           //将token放入localstorage中
           setStorage('token' ,data.token)
           //将该用户的基本信息/角色/权限放入到localstorage中
-
+          setStorage('userInfo', data.userInfo)
           this.$router.push({
             name: this.$config.homeName
           })

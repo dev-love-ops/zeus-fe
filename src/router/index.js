@@ -25,7 +25,12 @@ const turnTo = (to, access, next) => {
 
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
+
   const token = getStorage('token')
+  if (!token && to.name !== 'login'){
+    next({ name: 'login' });
+  }
+
   next()
 
 })

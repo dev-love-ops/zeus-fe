@@ -18,7 +18,7 @@
 <script>
 import './user.less'
 import { mapActions } from 'vuex'
-import { removeStorage } from '@/libs/util'
+import { clearStorage } from '@/libs/storage'
 export default {
   name: 'User',
   props: {
@@ -36,7 +36,7 @@ export default {
       'handleLogOut'
     ]),
     logout () {
-      removeStorage('token')
+      clearStorage()
       this.$router.push({
         name: 'login'
       })
