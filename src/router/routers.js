@@ -1,5 +1,7 @@
 import Main from '@/components/main'
 import parentView from '@/components/parent-view'
+import noSideRoutersWithMain from './noSideRoutersWithMain'
+import sideRouters from './sideRouters'
 
 /**
  * iview-admin中meta除了原生参数外可配置的参数:
@@ -28,81 +30,14 @@ const loginRouter =  {
   component: () => import('@/view/login/login.vue')
 }
 //不在菜单栏显示, 只在导航页显示, 并且作为Main组件的子页面展示
-const noSideRoutersWithMain = {
-    path: '/',
-    name: 'noSideRoutersWithMain',
-    redirect: '/home',
-    component: Main,
-    meta: {
-      hideInMenu: true,
-      notCache: true
-    },
-    children: [
-      {
-        path: '/home',
-        name: 'home',
-        meta: {
-          hideInMenu: true,
-          title: '首页',
-          notCache: true,
-          icon: 'md-home'
-        },
-        component: () => import('@/view/single-page/home')
-      },
-      {
-        path: 'message_page',
-        name: 'message_page',
-        meta: {
-          icon: 'md-notifications',
-          title: '消息中心'
-        },
-        component: () => import('@/view/single-page/message/index.vue')
-      }
-    ]
-  }
 
-export default [
-  {
-    path: '/system',
-    name: 'system',
-    meta: {
-      icon: 'md-settings',
-      title: '系统管理'
-    },
-    // 组件写成main的目的是侧边栏等通用显示部分
-    component: Main,
-    children: [
-      {
-        path: 'user',
-        name: 'user',
-        meta: {
-          icon: 'ios-contact',
-          title: '用户管理'
-        },
-        component: () => import('@/view/system/user.vue')
-      },
-      {
-        path: 'role',
-        name: 'role',
-        meta: {
-          icon: 'md-clipboard',
-          title: '角色管理'
-        },
-        component: () => import('@/view/system/role.vue')
-      },
-      {
-        path: 'permission',
-        name: 'permission',
-        meta: {
-          icon: 'md-clipboard',
-          title: '权限管理'
-        },
-        component: () => import('@/view/system/permission.vue')
-      }
-    ]
-  },
+
+ export default [
 
   loginRouter,
-  noSideRoutersWithMain,
+   noSideRoutersWithMain,
+   // sideRouters
 
 ]
+
+

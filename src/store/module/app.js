@@ -2,6 +2,7 @@ import {
   getBreadCrumbList,
   setTagNavListInLocalstorage,
   getMenuByRouter,
+  getAuthorizedMenuList,
   getTagNavListFromLocalstorage,
   getHomeRoute,
   getNextRoute,
@@ -14,8 +15,11 @@ import {
 import { saveErrorLogger } from '@/api/data'
 import router from '@/router'
 import routers from '@/router/routers'
+import sideRouters from '@/router/sideRouters'
 import config from '@/config'
 const { homeName } = config
+import axios from '@/libs/axios_new'
+import api from '@/api/index'
 
 const closePage = (state, route) => {
   const nextRoute = getNextRoute(state.tagNavList, route)
@@ -32,7 +36,8 @@ export default {
     homeRoute: {},
     local: localRead('local'),
     errorList: [],
-    hasReadErrorPage: false
+    hasReadErrorPage: false,
+    menuList1: []
   },
   getters: {
     menuList: (state, getters, rootState) => getMenuByRouter(routers, rootState.user.access),
@@ -85,6 +90,11 @@ export default {
     },
     setHasReadErrorLoggerStatus (state, status = true) {
       state.hasReadErrorPage = status
+    },
+    //设置有权限的菜单列表
+    setMenuList(state, authorizedRouterNames){
+      state.menuList1 = getAuthorizedMenuList([sideRouters], authorizedRouterNames)
+
     }
   },
   actions: {
@@ -101,6 +111,21 @@ export default {
       saveErrorLogger(info).then(() => {
         commit('addError', data)
       })
+    },
+    setMenuListAsync({ commit, state }){
+      axios('GET',
+        api.system.user.menuList,
+        {},
+        (data) => {
+
+          let names = []
+          for (let i = 0; i < data.length; i++) {
+            names.push(data[i].name)
+          }
+          commit('setMenuList', names)
+
+        })
     }
+
   }
 }

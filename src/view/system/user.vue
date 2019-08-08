@@ -329,6 +329,7 @@
     mounted () {
       this.getUserList()
       this.getRoleList()
+
     }
   }
 </script>

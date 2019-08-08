@@ -80,7 +80,8 @@ export default {
       return list
     },
     menuList () {
-      return this.$store.getters.menuList
+      // return this.$store.getters.menuList
+      return this.$store.state.app.menuList1
     },
     local () {
       return this.$store.state.app.local

@@ -22,19 +22,48 @@ const showThisMenuEle = (item, access) => {
 export const getMenuByRouter = (list, access) => {
   let res = []
   forEach(list, item => {
+    //没定义meta或者定义了meta并且隐藏菜单属性是false的话就会显示到菜单中
     if (!item.meta || (item.meta && !item.meta.hideInMenu)) {
       let obj = {
         icon: (item.meta && item.meta.icon) || '',
         name: item.name,
         meta: item.meta
       }
-      if ((hasChild(item) || (item.meta && item.meta.showAlways)) && showThisMenuEle(item, access)) {
+      // if ((hasChild(item) || (item.meta && item.meta.showAlways)) && showThisMenuEle(item, access)) {
+      if (hasChild(item)) {
         obj.children = getMenuByRouter(item.children, access)
       }
       if (item.meta && item.meta.href) obj.href = item.meta.href
       if (showThisMenuEle(item, access)) res.push(obj)
     }
   })
+  return res
+}
+
+
+/**
+ * 过滤用户有权限的菜单
+ */
+export const getAuthorizedMenuList = (totalRouters, authorizedRouterNames) => {
+  let res = []
+  forEach(totalRouters, item => {
+
+      let obj = {
+        icon: (item.meta && item.meta.icon) || '',
+        name: item.name,
+        meta: item.meta
+      }
+
+      if (hasChild(item)) {
+        obj.children = getAuthorizedMenuList(item.children, authorizedRouterNames)
+      }
+
+      if (authorizedRouterNames.indexOf(item.name) > -1){
+        res.push(obj)
+      }
+
+  })
+
   return res
 }
 
@@ -387,6 +416,3 @@ export const setTitle = (routeItem, vm) => {
   window.document.title = resTitle
 }
 
-export const initRouter = (vm) => {
-  console.log(vm)
-}

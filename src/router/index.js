@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import routes from './routers'
+import noSideRoutersWithMain from './noSideRoutersWithMain'
+import sideRouters from './sideRouters'
 import store from '@/store'
 import iView from 'iview'
 import { canTurnTo, setTitle } from '@/libs/util'
@@ -8,7 +10,9 @@ import { getStorage, setStorage } from '@/libs/storage'
 import config from '@/config'
 const { homeName } = config
 
+
 Vue.use(Router)
+
 const router = new Router({
   // 采用了ES6的对象简洁写法, 只有当key和value相同的时候, {routes}相当于{routes: routes}
   routes,
@@ -16,16 +20,23 @@ const router = new Router({
   // 具体的配置方法参考 https://router.vuejs.org/zh/guide/essentials/history-mode.html
   mode: 'history'
 })
+//动态添加路由
+router.addRoutes([sideRouters])
+//经过上面的动作以后只是添加了路由, 但是左侧的菜单还是不显示, 这里把左侧的菜单存储到了vuex中, 因为vuex是响应式的
 
-
-const turnTo = (to, access, next) => {
-  if (canTurnTo(to.name, access, routes)) next() // 有权限，可访问
-  else next({ replace: true, name: 'error_401' }) // 无权限，重定向到401页面
-}
+// store.commit('setMenuList', [sideRouters])
+store.dispatch('setMenuListAsync')
+// console.log(store.state.app.menuList1)
 
 router.beforeEach((to, from, next) => {
+  //每次进入新的路由加载头上的进度条
   iView.LoadingBar.start()
-
+  //放行登录页面
+  if (to.path === 'login'){
+    next()
+    return
+  }
+  //判断用户是否登录, 未登录的跳转到登录页面
   const token = getStorage('token')
   if (!token && to.name !== 'login'){
     next({ name: 'login' });

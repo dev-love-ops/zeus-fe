@@ -52,8 +52,6 @@ new Vue({
   router,
   i18n,
   store,
-  render: h => h(App),
-  mounted() {
-    initRouter(this)
-  }
+  render: h => h(App)
 })
+
