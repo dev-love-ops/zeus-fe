@@ -35,13 +35,11 @@ export default {
     tagNavList: [],
     homeRoute: {},
     local: localRead('local'),
-    errorList: [],
     hasReadErrorPage: false,
-    menuList1: []
+    menuList: []
   },
   getters: {
-    menuList: (state, getters, rootState) => getMenuByRouter(routers, rootState.user.access),
-    errorCount: state => state.errorList.length
+    // menuList: (state, getters, rootState) => getMenuByRouter(routers, rootState.user.access)
   },
   mutations: {
     setBreadCrumb (state, route) {
@@ -85,44 +83,29 @@ export default {
       localSave('local', lang)
       state.local = lang
     },
-    addError (state, error) {
-      state.errorList.push(error)
-    },
     setHasReadErrorLoggerStatus (state, status = true) {
       state.hasReadErrorPage = status
     },
-    //设置有权限的菜单列表
+    //设置有权限的菜单列表, mutations如果有多个参数的话, 需要使用对象传递, 第一个参数不能加大括号, 不然会出现undefined的错误
     setMenuList(state, authorizedRouterNames){
-      state.menuList1 = getAuthorizedMenuList([sideRouters], authorizedRouterNames)
+
+      state.menuList = getAuthorizedMenuList([sideRouters], authorizedRouterNames)
 
     }
   },
   actions: {
-    addErrorLog ({ commit, rootState }, info) {
-      if (!window.location.href.includes('error_logger_page')) commit('setHasReadErrorLoggerStatus', false)
-      const { user: { token, userId, userName } } = rootState
-      let data = {
-        ...info,
-        time: Date.parse(new Date()),
-        token,
-        userId,
-        userName
-      }
-      saveErrorLogger(info).then(() => {
-        commit('addError', data)
-      })
-    },
-    setMenuListAsync({ commit, state }){
+
+    setMenuListAsync({ commit }){
       axios('GET',
         api.system.user.menuList,
         {},
         (data) => {
 
-          let names = []
+          let authorizedRouterNames = []
           for (let i = 0; i < data.length; i++) {
-            names.push(data[i].name)
+            authorizedRouterNames.push(data[i].name)
           }
-          commit('setMenuList', names)
+          commit('setMenuList', authorizedRouterNames)
 
         })
     }

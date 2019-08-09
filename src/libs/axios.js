@@ -9,7 +9,7 @@ const addErrorLog = errorInfo => {
     mes: statusText,
     url: responseURL
   }
-  if (!responseURL.includes('save_error_logger')) store.dispatch('addErrorLog', info)
+
 }
 
 class HttpRequest {
@@ -60,7 +60,7 @@ class HttpRequest {
           request: { responseURL: config.url }
         }
       }
-      addErrorLog(errorInfo)
+
       return Promise.reject(error)
     })
   }

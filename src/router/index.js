@@ -24,9 +24,9 @@ const router = new Router({
 router.addRoutes([sideRouters])
 //经过上面的动作以后只是添加了路由, 但是左侧的菜单还是不显示, 这里把左侧的菜单存储到了vuex中, 因为vuex是响应式的
 
-// store.commit('setMenuList', [sideRouters])
+
 store.dispatch('setMenuListAsync')
-// console.log(store.state.app.menuList1)
+
 
 router.beforeEach((to, from, next) => {
   //每次进入新的路由加载头上的进度条
